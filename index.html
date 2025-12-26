@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dev Quiz Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="brand">
+        <div class="logo-dot"></div>
+        <div>
+          <span class="brand-title">Dev Quiz Game</span>
+          <span class="brand-sub">A focused quiz for web developers</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-area">
+      <!-- START SCREEN -->
+      <section class="panel panel-active" id="screen-start">
+        <div class="start-hero">
+          <p class="hero-eyebrow">Developer skills check</p>
+          <h1>How far can you push your dev intuition?</h1>
+          <p class="hero-lead">
+            A short, intense quiz about web, HTTP, SQL, Git and JavaScript.
+            Choose a mode, start the timer and see where you really stand.
+          </p>
+        </div>
+
+        <div class="start-main">
+          <!-- Mode area -->
+          <section class="start-card">
+            <h2 class="start-card-title">Choose a mode</h2>
+            <p class="start-card-sub">
+              Normal is great for a first run. Hardcore punishes guessing and rewards precision.
+            </p>
+
+            <div class="mode-row">
+              <button class="btn mode-btn mode-active" data-mode="normal">
+                <div class="mode-line">
+                  <span class="mode-name">Normal</span>
+                  <span class="mode-chip">120 seconds</span>
+                </div>
+                <span class="mode-desc">
+                  No penalty for wrong answers. Ideal for warming up and learning the flow.
+                </span>
+              </button>
+
+              <button class="btn mode-btn" data-mode="hardcore">
+                <div class="mode-line">
+                  <span class="mode-name">Hardcore</span>
+                  <span class="mode-chip mode-chip-danger">75 seconds</span>
+                </div>
+                <span class="mode-desc">
+                  Each wrong answer removes 5 points. Forces careful thinking instead of guessing.
+                </span>
+              </button>
+            </div>
+
+            <button id="start-btn" class="btn btn-primary start-btn-main">
+              Start quiz
+            </button>
+
+            <p class="start-meta">
+              Personal best: <span id="global-best">—</span>
+              <span class="meta-separator">·</span>
+              Total runs: <span id="total-runs">0</span>
+            </p>
+          </section>
+
+          <!-- Info area -->
+          <section class="start-card start-card-secondary">
+            <h2 class="start-card-title">What to expect</h2>
+
+            <div class="info-grid">
+              <div class="info-block">
+                <h3>Scoring</h3>
+                <ul class="rules">
+                  <li>Each question has a difficulty: <strong>easy</strong>, <strong>medium</strong>, or <strong>hard</strong>.</li>
+                  <li>Harder questions give more points.</li>
+                  <li>Correct answers in a row build a streak and bonus points.</li>
+                </ul>
+              </div>
+
+              <div class="info-block">
+                <h3>Ranks</h3>
+                <div class="rank-row">
+                  <span class="rank-tag rank-beginner">Beginner</span>
+                  <span class="rank-text">Below 40% — foundations are there, big room to grow.</span>
+                </div>
+                <div class="rank-row">
+                  <span class="rank-tag rank-solid">Solid Dev</span>
+                  <span class="rank-text">40–75% — good control, a few more serious runs to reach brutal.</span>
+                </div>
+                <div class="rank-row">
+                  <span class="rank-tag rank-brutal">Expert</span>
+                  <span class="rank-text">Above 75% — strong signal that you really know your craft.</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- QUIZ SCREEN -->
+      <section class="panel" id="screen-quiz">
+        <div class="quiz-top">
+          <div class="pill pill-mode">
+            <span class="pill-label">Mode</span>
+            <span class="pill-value" id="current-mode-label">Normal</span>
+          </div>
+          <div class="pill">
+            <span class="pill-label">Question</span>
+            <span class="pill-value" id="question-counter">1 / 6</span>
+          </div>
+          <div class="pill">
+            <span class="pill-label">Score</span>
+            <span class="pill-value" id="current-score">0</span>
+          </div>
+          <div class="pill pill-timer">
+            <span class="pill-label">Time</span>
+            <span class="pill-value" id="timer">120s</span>
+          </div>
+          <div class="pill">
+            <span class="pill-label">Streak</span>
+            <span class="pill-value" id="current-streak">0</span>
+          </div>
+        </div>
+
+        <div class="progress-wrapper">
+          <div id="progress-bar"></div>
+        </div>
+
+        <div class="quiz-main">
+          <div class="question-meta">
+            <span id="question-difficulty" class="badge badge-difficulty">EASY</span>
+            <span id="question-category" class="badge badge-category">General</span>
+          </div>
+
+          <h2 id="question-text"></h2>
+
+          <div id="options-container"></div>
+
+          <div class="feedback-block">
+            <p id="feedback" class="feedback"></p>
+            <p id="explanation" class="explanation"></p>
+          </div>
+
+          <div class="quiz-bottom">
+            <div class="bottom-stats">
+              <span>Correct: <span id="side-correct">0</span></span>
+              <span>Wrong: <span id="side-wrong">0</span></span>
+              <span>Max streak: <span id="side-max-streak">0</span></span>
+            </div>
+            <button id="next-btn" class="btn btn-ghost" disabled>
+              Next question →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULT SCREEN -->
+      <section class="panel" id="screen-result">
+        <div class="panel-header">
+          <h1>Your run summary</h1>
+          <p>
+            A quick breakdown of this attempt. Use it as a benchmark and try to beat it next time.
+          </p>
+        </div>
+
+        <div class="results-layout">
+          <div class="results-main">
+            <div class="score-badge">
+              <div class="score-circle">
+                <span id="final-percentage">0%</span>
+              </div>
+              <div class="score-text">
+                <p id="final-title" class="final-title"></p>
+                <p id="final-subtitle" class="final-subtitle"></p>
+              </div>
+            </div>
+
+            <div class="result-stats-row">
+              <div class="pill pill-stat">
+                <span class="pill-label">Points</span>
+                <span class="pill-value" id="final-score">0 / 0</span>
+              </div>
+              <div class="pill pill-stat">
+                <span class="pill-label">Correct</span>
+                <span class="pill-value" id="final-correct">0</span>
+              </div>
+              <div class="pill pill-stat">
+                <span class="pill-label">Wrong</span>
+                <span class="pill-value" id="final-wrong">0</span>
+              </div>
+              <div class="pill pill-stat">
+                <span class="pill-label">Max streak</span>
+                <span class="pill-value" id="final-max-streak">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="results-side">
+            <h2>Progress over time</h2>
+            <p id="best-score-text" class="small-text"></p>
+            <p id="runs-text" class="small-text"></p>
+
+            <div class="results-actions">
+              <button id="play-again-btn" class="btn btn-primary">
+                Play again
+              </button>
+              <button id="back-to-start-btn" class="btn btn-ghost">
+                Back to start
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Built by Armin</span>
+      <span class="dot"></span>
+      <span>Open-source on GitHub</span>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
